@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SR Comsoft AI — File Architecture</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0f1117;color:#e2e8f0;height:100vh;display:flex;flex-direction:column}
+.topbar{background:#1a1d2e;border-bottom:1px solid #2d3148;padding:12px 20px;display:flex;align-items:center;gap:16px;flex-shrink:0}
+.topbar h1{font-size:15px;font-weight:600;color:#a78bfa}
+.topbar span{font-size:11px;color:#64748b}
+.tabs{display:flex;gap:4px;flex-wrap:wrap}
+.tab{font-size:11px;padding:4px 10px;border-radius:6px;border:1px solid #2d3148;cursor:pointer;color:#94a3b8;background:transparent;transition:all .12s}
+.tab.on{background:#1e1b4b;color:#a78bfa;border-color:#4c1d95;font-weight:500}
+.tab:hover:not(.on){background:#1e2130;color:#cbd5e1}
+.main{display:flex;flex:1;overflow:hidden}
+.left{width:270px;min-width:270px;border-right:1px solid #2d3148;overflow-y:auto;background:#0f1117}
+.right{flex:1;overflow-y:auto;padding:20px 24px;background:#111827}
+.layer-hdr{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:10px 14px 4px;color:#475569}
+.fitem{padding:7px 14px;cursor:pointer;border-left:2px solid transparent;transition:all .12s;display:flex;align-items:flex-start;gap:8px}
+.fitem:hover{background:#1e2130;border-left-color:#334155}
+.fitem.sel{background:#1e1b4b;border-left-color:#7c3aed}
+.fitem .fn{font-size:12px;font-family:'Courier New',monospace;color:#e2e8f0;line-height:1.3}
+.fitem .fd{font-size:10px;color:#64748b;line-height:1.3;margin-top:1px}
+.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.empty{padding:60px 24px;text-align:center;color:#475569;font-size:13px;line-height:2}
+.dd-title{font-size:18px;font-weight:600;color:#e2e8f0;margin-bottom:4px;display:flex;align-items:center;gap:10px}
+.dd-path{font-size:11px;color:#475569;font-family:'Courier New',monospace;margin-bottom:14px}
+.dd-purpose{font-size:13px;color:#94a3b8;background:#1a1d2e;border:1px solid #2d3148;border-radius:8px;padding:12px 14px;margin-bottom:16px;line-height:1.7}
+.tree{font-family:'Courier New',monospace;font-size:12px;color:#cbd5e1;background:#0d1117;border:1px solid #2d3148;border-radius:8px;padding:16px 18px;line-height:1.9;white-space:pre;overflow-x:auto}
+.hdr{color:#7c3aed;font-weight:600}
+.fn-color{color:#818cf8}
+.arrow{color:#475569}
+.http{color:#34d399;font-weight:600}
+.warn-color{color:#fbbf24}
+.render-color{color:#60a5fa}
+.badge{display:inline-block;font-size:10px;padding:2px 8px;border-radius:10px;font-family:sans-serif;font-weight:500}
+.b-ok{background:#052e16;color:#4ade80;border:1px solid #166534}
+.b-warn{background:#2d1b00;color:#fbbf24;border:1px solid #78350f}
+.b-none{background:#1e2130;color:#64748b;border:1px solid #334155}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:#0f1117}
+::-webkit-scrollbar-thumb{background:#2d3148;border-radius:3px}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div>
+    <h1>SR Comsoft AI — File Architecture</h1>
+    <span>Click any file to see functions, methods &amp; logic flow</span>
+  </div>
+  <div class="tabs" id="tabs">
+    <button class="tab on" onclick="filterTab('all',this)">All</button>
+    <button class="tab" onclick="filterTab('auth',this)">Auth</button>
+    <button class="tab" onclick="filterTab('admin',this)">Admin</button>
+    <button class="tab" onclick="filterTab('su',this)">Superuser</button>
+    <button class="tab" onclick="filterTab('agent',this)">Agent</button>
+    <button class="tab" onclick="filterTab('user',this)">User</button>
+    <button class="tab" onclick="filterTab('be',this)">Backend</button>
+  </div>
+</div>
+
+<div class="main">
+  <div class="left" id="tree-list"></div>
+  <div class="right" id="detail">
+    <div class="empty">
+      ← Click any file to see its full<br>function tree, methods &amp; logic flow
+    </div>
+  </div>
+</div>
+
+<script>
+const DOCS = [
+  {layer:"Entry & Routing",color:"#185FA5",tag:"all",files:[
+    {name:"main.jsx",path:"src/main.jsx",status:"ok",desc:"React app entry point",
+     purpose:"Bootstraps the React application. Mounts the root App component into the DOM.",
+     tree:`// ======================== main.jsx ========================
+// Entry point — mounts React app to DOM
+//
+// Functions/Methods -> (none — pure mount)
+//
+// ||---> Logic Flow:
+//       |--- Import App.jsx
+//       |--- Import global.css
+//       |--- createRoot(document.getElementById('root'))
+//       └─── .render(<StrictMode><App /></StrictMode>)
+// ======================================================`},
+    {name:"App.jsx",path:"src/App.jsx",status:"ok",desc:"Root app component",
+     purpose:"Composes BrowserRouter, AuthProvider and AppRoutes into the root app shell.",
+     tree:`// ======================== App.jsx ========================
+// Root component — wraps all providers
+//
+// Functions/Methods -> App() -> Root component
+//
+// ||---> Logic Flow:
+//       |--- Render <BrowserRouter>
+//       |     └── <AuthProvider>
+//       |           └── <AppRoutes />
+// ======================================================`},
+    {name:"AppRoutes.jsx",path:"src/routes/AppRoutes.jsx",status:"ok",desc:"All route definitions",
+     purpose:"Defines all role-based routes. Maps paths to page components wrapped in ProtectedRoute.",
+     tree:`// ======================== AppRoutes.jsx ========================
+// All routes — role-based navigation map
+//
+// Functions/Methods -> AppRoutes() -> Route tree renderer
+//
+// ||---> Routes defined:
+//       |--- /                  → Home.jsx (MainLayout)
+//       |--- /login             → Login.jsx
+//       |--- /register          → Register.jsx
+//       |--- /welcome           → GreetAi.jsx (role: user)
+//       |--- /user/*            → AppShell + user pages (role: user)
+//       |--- /admin/dashboard   → AdminDashboard (role: admin)
+//       |--- /admin/settings    → AdminSettings (role: admin)
+//       |--- /admin/*           → AdminPage (role: admin)
+//       |--- /superuser/*       → Superuser pages (role: superuser)
+//       |--- /agent             → AgentPage (role: agent)
+//       |--- /agent/dashboard   → AgentDashboard (role: agent)
+//       └─── *                  → Navigate to /welcome
+// ======================================================`},
+    {name:"ProtectedRoute.jsx",path:"src/routes/ProtectedRoute.jsx",status:"ok",desc:"Role guard for routes",
+     purpose:"Checks JWT token and user role from localStorage. Redirects to /login if unauthorized.",
+     tree:`// ======================== ProtectedRoute.jsx ========================
+// Route guard — validates token + role
+//
+// Functions/Methods -> ProtectedRoute({ role, children })
+//
+// ||---> Logic Flow:
+//       |--- Read token from localStorage.getItem("token")
+//       |--- Read user  from localStorage.getItem("user")
+//       |--- IF no token            → redirect to /login
+//       |--- IF role specified AND user.role !== role
+//       |    └── redirect to /login
+//       └─── ELSE render children
+// ======================================================`},
+    {name:"AuthContext.jsx",path:"src/context/AuthContext.jsx",status:"ok",desc:"Global auth state",
+     purpose:"Provides global user, token and role state via React Context. Persists to localStorage.",
+     tree:`// ======================== AuthContext.jsx ========================
+// Global auth context — user/token/role state
+//
+// Functions/Methods -> AuthProvider({ children })
+//                   |---> login(userData, token)  → Store to state + localStorage
+//                   |---> logout()                → Clear state + localStorage + navigate /login
+//                   |---> useAuth()               → Consume context hook
+//
+// ||---> State:
+//       |--- user: { id, name, email, role }
+//       |--- token: JWT string
+//       └─── isAuthenticated: boolean
+// ======================================================`},
+  ]},
+  {layer:"Auth Pages",color:"#534AB7",tag:"auth",files:[
+    {name:"Login.jsx",path:"src/pages/Login.jsx",status:"ok",desc:"JWT login form",
+     purpose:"Login form that POSTs credentials to /api/login. On success stores JWT and navigates by role.",
+     tree:`// ======================== Login.jsx ========================
+// Login page — JWT authentication
+//
+// Functions/Methods -> Login() -> Form component
+//                   |---> handleSubmit(e)   → POST /api/login
+//                   |     |--- Validate email + password not empty
+//                   |     |--- fetch POST /api/login with credentials
+//                   |     |--- On success: store token + user to localStorage
+//                   |     |--- Role-based redirect:
+//                   |     |     admin     → /admin
+//                   |     |     superuser → /superuser
+//                   |     |     agent     → /agent
+//                   |     └──   user      → /welcome
+//                   └---> handleChange(e)  → Update form state
+//
+// ||---> State: email, password, error, loading
+// ======================================================`},
+    {name:"Register.jsx",path:"src/pages/Register.jsx",status:"ok",desc:"User signup form",
+     purpose:"Registration form. POSTs to /api/register, auto-logs in on success, redirects to /welcome.",
+     tree:`// ======================== Register.jsx ========================
+// Register page — new user signup
+//
+// Functions/Methods -> Register() -> Form component
+//                   |---> handleSubmit(e)  → POST /api/register
+//                   |     |--- Validate all fields present
+//                   |     |--- fetch POST /api/register
+//                   |     |--- On success: store token + user
+//                   |     └─── Navigate to /welcome
+//                   └---> handleChange(e)  → Update form state
+//
+// ||---> State: name, email, password, phone_number, error, loading
+// ======================================================`},
+  ]},
+  {layer:"Admin Pages",color:"#993C1D",tag:"admin",files:[
+    {name:"Admindashboard.jsx",path:"src/pages/admin/Admindashboard.jsx",status:"ok",desc:"Admin analytics dashboard",
+     purpose:"Main admin dashboard. Fetches call logs, renders sankey/3D charts, staff performance, query categories. Polling every 30s.",
+     tree:`// ======================== AdminDashboard.jsx ========================
+// Admin dashboard — call logs, charts, filters
+//
+// Functions/Methods -> AdminDashboard() -> Main component
+//                   |
+//                   |---> fetchDashboardData()   → useCallback
+//                   |     |--- GET /api/calls with auth header
+//                   |     |--- Format rows → allCallLogs state
+//                   |     └─── setIsSyncing(false) after 800ms
+//                   |
+//                   |---> handleSmartSearch(e)   → POST /api/nl2sql [MISSING]
+//                   |     |--- POST query to /api/nl2sql
+//                   |     |--- On success: replace call logs with AI results
+//                   |     └─── setAiIntent label
+//                   |
+//                   |---> onChartClick(params)   → Filter by clicked node
+//                   |---> getDynamicPerformanceSankey() → Build sankey data
+//                   |---> getDynamicQuerySankey()       → Build query sankey
+//                   |---> get3DOptions(type)            → ECharts 3D config
+//                   |---> getHexColor(type)             → Category → hex color
+//                   |
+//                   |---> useEffect() → Mount: setShowUI, fetchDashboardData
+//                   |---> useEffect() → Polling: setInterval 30s
+//
+// ||---> State: showUI, viewMode, allCallLogs, isLoading, isSyncing,
+//              selectedTeam, selectedAgent, selectedCategory,
+//              activeFilter, drillDownCategory, activeModal,
+//              smartQuery, isSearching, aiIntent
+//
+// ||---> Renders:
+//       |--- Sidebar (filters + nav)
+//       |--- Tabs: performance / queries / simulator
+//       |--- viewMode=performance → StaffPerformance
+//       |--- viewMode=queries     → AIQueryCategories
+//       |--- viewMode=simulator   → LiveQuerySimulator
+//       |--- Transcripts panel (filteredLogs)
+//       |--- Sankey chart (reactive)
+//       |--- Drill-down modal
+//       └─── 3D modal
+// ======================================================`},
+    {name:"AdminSettings.jsx",path:"src/pages/admin/AdminSettings.jsx",status:"ok",desc:"User management panel",
+     purpose:"User management: list all users, toggle active/inactive, add credits. Polling every 30s.",
+     tree:`// ======================== AdminSettings.jsx ========================
+// Admin settings — user management
+//
+// Sub-components:
+//   StatCard({ label, value, color })      → KPI display card
+//   CreditsModal({ user, onClose, onSave }) → Add credits form
+//   ConfirmModal({ message, onConfirm })    → Confirm dialog
+//
+// Functions/Methods -> AdminSettings() -> Main component
+//                   |---> fetchAll()           → useCallback
+//                   |     |--- GET /api/admin/users
+//                   |     |--- GET /api/admin/stats
+//                   |     └─── Update users + stats state
+//                   |
+//                   |---> toggleStatus(user)   → PUT /api/admin/users/:id/status
+//                   |     |--- Show ConfirmModal
+//                   |     |--- On confirm: PUT status toggle
+//                   |     └─── Update users state locally
+//                   |
+//                   |---> handleAddCredits(userId, amount)
+//                   |     └─── PUT /api/admin/users/:id/credits
+//                   |
+//                   |---> showToast(msg)       → 3s toast notification
+//                   |---> useEffect()          → fetchAll on mount
+//                   |---> useEffect()          → Polling: setInterval 30s
+//
+// ||---> Computed: filtered → users by search + role + status
+// ======================================================`},
+    {name:"StaffPerformance.jsx",path:"src/pages/admin/StaffPerformance.jsx",status:"ok",desc:"Team + agent charts (prop-driven)",
+     purpose:"Renders team performance bar/line chart and agent 2D scatter. Prop-driven from AdminDashboard.",
+     tree:`// ======================== StaffPerformance.jsx ========================
+// Staff performance charts — prop-driven
+//
+// Functions/Methods -> StaffPerformance({ filteredLogs, onChartClick, setActiveModal })
+//                   |---> getTeamPerformanceOptions() → ECharts bar+line config
+//                   |     |--- Aggregate filteredLogs by team
+//                   |     └─── Calls bar + CSAT line dual-axis
+//                   |
+//                   |---> get2DAgentOptions()         → ECharts scatter config
+//                   |     |--- Aggregate filteredLogs by agent
+//                   |     └─── x=calls, y=CSAT, color by CSAT score
+//                   |
+//                   └---> useEffect() → 150ms → setReady(true) [ECharts fix]
+//
+// ||---> Renders:
+//       |--- Team Performance chart (300px)
+//       └─── Agent Breakdown scatter + 3D View button
+// ======================================================`},
+    {name:"AIQueryCategories.jsx",path:"src/pages/admin/AIQueryCategories.jsx",status:"warn",desc:"Query charts + smart search",
+     purpose:"Renders query volume bar and intent bubble charts. Smart search calls /api/nl2sql which is missing.",
+     tree:`// ======================== AIQueryCategories.jsx ========================
+// AI query categories — charts + smart search [PARTIAL]
+//
+// Functions/Methods -> AIQueryCategories({ filteredLogs, onChartClick,
+//                      setActiveModal, getHexColor, smartQuery,
+//                      setSmartQuery, handleSmartSearch, isSearching })
+//                   |---> getQueryBubbleOptions() → ECharts scatter bubble
+//                   |     └─── Aggregate category counts from filteredLogs
+//                   |
+//                   |---> getQueryBarChartOptions() → ECharts bar
+//                   |     └─── Sort categories by volume descending
+//                   |
+//                   └---> useEffect() → 150ms → setReady(true) [ECharts fix]
+//
+// ||---> Renders:
+//       |--- Smart search input (calls handleSmartSearch from parent)
+//       |--- Query Volumes bar chart
+//       └─── Intent Clusters bubble + 3D View button
+//
+// MISSING: /api/nl2sql endpoint not yet built
+// ======================================================`},
+    {name:"LiveQuerySimulator.jsx",path:"src/pages/admin/LiveQuerySimulator.jsx",status:"warn",desc:"Live AI query routing simulator",
+     purpose:"Simulates AI query routing. Injects test queries, categorizes via /api/rag (keyword fallback), saves to DB.",
+     tree:`// ======================== LiveQuerySimulator.jsx ========================
+// Live query simulator — inject, categorize, resolve
+//
+// Functions/Methods -> LiveQuerySimulator() -> Main component
+//                   |---> useEffect()          → GET /api/calls → populateLogs
+//                   |
+//                   |---> handleSimulate(e)    → POST /api/rag → POST /api/calls
+//                   |     |--- POST /api/rag for AI categorization
+//                   |     |--- On failure: keyword fallback
+//                   |     |     (HR / Finance / Tech / Sales / Complaints)
+//                   |     |--- POST /api/calls to save to DB
+//                   |     └─── Prepend to simulatedLogs state
+//                   |
+//                   |---> handleAction(id, status) → PUT /api/calls/:id
+//                   |     |--- Optimistic update to simulatedLogs
+//                   |     └─── PUT /api/calls/:id with new status
+//                   |
+//                   |---> getDynamicSankeyData()  → Build nodes + links
+//                   |---> getBubbleOptions()       → ECharts scatter config
+//                   |---> getSankeyOptions()       → ECharts sankey config
+//                   |---> get3DOptions()           → ECharts 3D scatter config
+//
+// ||---> State: inputText, isProcessing, simulatedLogs, activeModal
+//
+// MISSING: /api/rag endpoint (falls back to keyword detection)
+// BUG: stystyle= typo in 3D modal (style= only needed)
+// ======================================================`},
+  ]},
+  {layer:"Superuser Pages",color:"#0F6E56",tag:"su",files:[
+    {name:"Dashboard.jsx",path:"src/pages/superuser/Dashboard.jsx",status:"ok",desc:"Superuser main dashboard",
+     purpose:"Main superuser analytics hub. Fetches team agents and sankey data. Polling every 30s via handleRefresh.",
+     tree:`// ======================== Dashboard.jsx (Superuser) ========================
+// Superuser dashboard — main analytics hub
+//
+// Functions/Methods -> Dashboard() -> Main component
+//                   |---> handleRefresh()     → useCallback
+//                   |     └─── setSelectedDate(today) → triggers data fetch
+//                   |
+//                   |---> handleAgentClick(agent) → Navigate /superuser/agent/:id
+//                   |
+//                   |---> handleDownload(format)  → Export PDF or Excel
+//                   |     |--- format=pdf:   html2canvas → jsPDF → save
+//                   |     └─── format=excel: XLSX KPI + agent sheets → save
+//                   |
+//                   |---> useEffect() → Polling: setInterval(handleRefresh, 30s)
+//                   |
+//                   |---> useEffect() → Data fetch (on filter change)
+//                   |     |--- GET /api/agents?period=&date=&channel=&shift=
+//                   |     |--- GET /api/sankey?params
+//                   |     └─── setDbAgents + setDbSankey
+//
+// ||---> State: selectedTimeFilter, selectedDate, selectedChannel,
+//              selectedShift, dbAgents, dbSankey, loading, error
+//
+// ||---> Renders:
+//       |--- IF loading → spinner
+//       |--- IF error   → error card
+//       |--- Sidebar, Header (filters + export)
+//       |--- Infographics (KPI cards from /api/stats)
+//       |--- BubbleChart (agents 3D)
+//       |--- SankeyChart (flow)
+//       |--- RiskPanel  (agents)
+//       |--- KPIPanel   (live from agents prop)
+//       └─── AIChatBox  (floating)
+// ======================================================`},
+    {name:"Agents.jsx",path:"src/pages/superuser/Agents.jsx",status:"ok",desc:"Team agent list page",
+     purpose:"Lists all agents scoped to the logged-in superuser via superuser_id. Links to agent detail pages.",
+     tree:`// ======================== Agents.jsx ========================
+// Superuser agents list — team-scoped
+//
+// Functions/Methods -> SuperuserAgents() -> Main component
+//                   |---> useEffect() → GET /api/agents
+//                   |     (team-scoped by superuser_id in backend)
+//                   |
+//                   └---> handleAgentClick(id) → /superuser/agent/:id
+//
+// ||---> State: agents, loading
+//
+// ||---> Renders:
+//       |--- Agent cards grid
+//       |--- Each card: name, model, skillLevel, csat, workload, riskLevel
+//       └─── Click → navigate to agent detail
+// ======================================================`},
+    {name:"AgentDetail.jsx",path:"src/pages/superuser/AgentDetail.jsx",status:"ok",desc:"Individual agent detail",
+     purpose:"Full detail for one agent — profile stats, call logs table, category graph. Scoped to superuser team.",
+     tree:`// ======================== AgentDetail.jsx ========================
+// Individual agent detail page
+//
+// Functions/Methods -> SuperuserAgentDetail() -> Main component
+//                   └---> useEffect() → GET /api/agents/:id
+//                         |--- Returns agent + callLogs + graphData
+//                         └─── All scoped to superuser_id in backend
+//
+// ||---> State: agent, callLogs, graphData, loading
+//
+// ||---> Renders:
+//       |--- Agent profile card (stats)
+//       |--- ECharts category bar (graphData)
+//       └─── Call logs table
+// ======================================================`},
+    {name:"CallAnalytics.jsx",path:"src/pages/superuser/CallAnalytics.jsx",status:"ok",desc:"3D bubble + call log drilldown",
+     purpose:"3D scatter of call categories. Click bubble to fetch and show call logs for that category. Polling 30s.",
+     tree:`// ======================== CallAnalytics.jsx ========================
+// 3D category bubble + call log drilldown
+//
+// Sub-components:
+//   CategorySphere({ position, size, color, item, onClick, onHover })
+//     |--- useFrame() → float animation + scale lerp on hover
+//     └─── meshStandardMaterial with emissive glow
+//
+//   SceneContents({ data, onBubbleClick, hoveredItem, interactive })
+//     |--- useMemo() → compute bubble positions + sizes
+//     └─── OrbitControls only in fullscreen mode
+//
+//   SentimentBadge({ sentiment })  → Colored pill badge
+//   AudioPlayer({ url })           → Custom player with progress bar
+//   CallCard({ call })             → Expandable call detail card
+//
+// Main: CallAnalytics()
+//                   |---> fetchStats()        → useCallback
+//                   |     └─── GET /api/call-stats
+//                   |
+//                   |---> handleBubbleClick(item)
+//                   |     └─── GET /api/calls/category/:cat
+//                   |
+//                   |---> useEffect() → fetchStats on mount
+//                   |---> useEffect() → Polling: setInterval 30s
+//
+// ||---> State: data, loading, show3DDetail, hoveredItem,
+//              selectedCategory, categoryCalls, loadingCalls, fetchError
+//
+// NOTE: Single Canvas only — toggled inline/fullscreen via CSS
+//       Two Canvas = WebGL context loss
+// ======================================================`},
+    {name:"Settings.jsx",path:"src/pages/superuser/Settings.jsx",status:"ok",desc:"Agent CRUD settings",
+     purpose:"Full agent management — create, edit, toggle active, delete. All camelCase matching PostgreSQL quoted aliases.",
+     tree:`// ======================== Settings.jsx (Superuser) ========================
+// Agent CRUD — create/edit/toggle/delete
+//
+// Functions/Methods -> SuperuserSettings() -> Main component
+//                   |---> fetchAgents()       → GET /api/agents → setAgents
+//                   |
+//                   |---> openEdit(agent)     → Pre-fill editForm camelCase fields
+//                   |
+//                   |---> handleEditSubmit()  → PUT /api/agents/:id
+//                   |     |--- Send camelCase body: name, modelVariant...
+//                   |     └─── fetchAgents() to sync from DB
+//                   |
+//                   |---> handleCreate()      → POST /api/agents
+//                   |---> handleDelete(id)    → DELETE /api/agents/:id
+//                   |
+//                   |---> toggleAgent(agent)  → PUT { isActive: !agent.isActive }
+//                   |---> stopAll()           → Promise.all PUT isActive:false
+//                   |---> resumeAll()         → Promise.all PUT isActive:true
+//
+// ||---> State: agents, showEditModal, showCreateModal, editForm
+//
+// NOTE: All field names camelCase — matches PostgreSQL quoted AS "riskLevel"
+// ======================================================`},
+    {name:"IVRStudio.jsx",path:"src/pages/superuser/IVRStudio.jsx",status:"none",desc:"IVR builder — placeholder",
+     purpose:"Placeholder page for IVR studio. No functionality implemented yet.",
+     tree:`// ======================== IVRStudio.jsx ========================
+// IVR Studio — placeholder only
+//
+// Status: NOT IMPLEMENTED
+//
+// Planned features:
+//   |--- Visual IVR flow builder
+//   |--- Node-based pathway editor
+//   └─── Connect to /api/ivr endpoints (not built)
+// ======================================================`},
+    {name:"Escalations.jsx",path:"src/pages/superuser/Escalations.jsx",status:"none",desc:"Escalations view — placeholder",
+     purpose:"Placeholder page for escalation management. No functionality implemented yet.",
+     tree:`// ======================== Escalations.jsx ========================
+// Escalations — placeholder only
+//
+// Status: NOT IMPLEMENTED
+//
+// Planned features:
+//   |--- Live escalated call queue
+//   |--- Agent assignment
+//   └─── Connect to /api/escalations (not built)
+// ======================================================`},
+  ]},
+  {layer:"Agent Pages",color:"#3B6D11",tag:"agent",files:[
+    {name:"AgentPage.jsx",path:"src/pages/AgentPage.jsx",status:"ok",desc:"Agent landing page",
+     purpose:"Agent landing shell with sidebar nav and sticky header containing Open Dashboard button.",
+     tree:`// ======================== AgentPage.jsx ========================
+// Agent landing — shell with nav + dashboard link
+//
+// Sub-components:
+//   Sidebar({ active, setActive, onLogout }) → Fixed left nav
+//   EmptyCard({ title, desc })               → Placeholder card
+//   MainContent({ active })                  → Active tab content
+//
+// Main: AgentPage()
+//                   |---> handleLogout() → Clear localStorage → /login
+//
+// ||---> State: active (dashboard | ivr | calls)
+//
+// ||---> Renders:
+//       |--- GlobalStyles
+//       |--- Sticky header with Open Dashboard button
+//       |    └─── onClick → navigate("/agent/dashboard")
+//       |--- Sidebar
+//       └─── MainContent (placeholder cards per tab)
+// ======================================================`},
+    {name:"AgentDashboard.jsx",path:"src/pages/agent/AgentDashboard.jsx",status:"ok",desc:"Full agent dashboard entry",
+     purpose:"Entry point for the agent dashboard. Composes all agentDashboard components using useAgentDashboard hook.",
+     tree:`// ======================== AgentDashboard.jsx ========================
+// Agent dashboard entry — composes all components
+//
+// Components used:
+//   Sidebar  (agentDashboard/Sidebar)
+//   Header   (agentDashboard/Header)
+//   OverviewTab, CallsTab, AnalyticsTab, SettingsTab (Tabs)
+//
+// Main: AgentDashboard()
+//                   |---> useAgentDashboard() → All data + state from hook
+//                   |
+//                   |---> renderTab()         → Switch on activeTab
+//                   |     |--- overview   → OverviewTab
+//                   |     |--- calls      → CallsTab
+//                   |     |--- analytics  → AnalyticsTab
+//                   |     └─── settings   → SettingsTab
+//
+// ||---> State: activeTab (local useState)
+//
+// ||---> Renders:
+//       |--- GlobalStyles
+//       |--- Sidebar + Header
+//       |--- main: renderTab()
+//       └─── Loader spinner when loading
+// ======================================================`},
+    {name:"Sidebar.jsx (agent)",path:"src/components/agentDashboard/Sidebar.jsx",status:"ok",desc:"Agent sidebar + IVR card",
+     purpose:"Agent dashboard sidebar with avatar, profile stats grid, nav tabs, IVR activity card, back/logout.",
+     tree:`// ======================== Sidebar.jsx (agentDashboard) ========================
+// Agent sidebar — profile + nav + IVR card
+//
+// Sub-components:
+//   IVRCard({ token })
+//     |--- useEffect() → GET /api/agent/ivr-status
+//     |--- Renders pathway hit count bars for last 24h
+//     └─── Max-normalised width bars
+//
+// Main: Sidebar({ activeTab, setActiveTab, profile, token })
+//                   |---> handleLogout() → Clear localStorage → /login
+//                   |---> initials       → 2-letter avatar from profile.name
+//
+// ||---> Renders:
+//       |--- Avatar + name + email + active badge
+//       |--- Profile stats grid (skill, model, csat, risk)
+//       |--- Nav buttons (overview/calls/analytics/settings)
+//       |--- IVRCard
+//       |--- Back to Agent Page button
+//       └─── Logout button
+// ======================================================`},
+    {name:"Header.jsx (agent)",path:"src/components/agentDashboard/Header.jsx",status:"ok",desc:"Header + KPI row + filters",
+     purpose:"Agent dashboard header: page title, channel filter, date range picker with presets, CSAT badge, KPI row.",
+     tree:`// ======================== Header.jsx (agentDashboard) ========================
+// Agent header — controls + KPI row
+//
+// Sub-components:
+//   DateRangePicker({ from, to, onChange })
+//     |--- useRef()     → outside-click to close
+//     |--- Presets:       Today / Last 7d / 30d / 90d
+//     |--- Custom date inputs
+//     └─── applyPreset(days) → compute from/to ISO dates
+//
+//   KPIRow({ kpis, fmtDur })
+//     └─── 5 cards: total, resolved, escalated, avgDuration, totalCost
+//
+// Main: Header({ activeTab, profile, csatData, dateRange,
+//               setDateRange, channel, setChannel, stats, fmtDur })
+//
+// ||---> Renders:
+//       |--- Page title + agent name + date
+//       |--- Channel filter pills (All / Voice / Chat / Email)
+//       |--- DateRangePicker
+//       |--- CSAT badge (green ≥4 / amber ≥3 / red <3)
+//       └─── KPIRow (overview + analytics tabs only)
+// ======================================================`},
+    {name:"Charts.jsx (agent)",path:"src/components/agentDashboard/Charts.jsx",status:"ok",desc:"All 6 ECharts components",
+     purpose:"All agent dashboard charts as named exports. Each wraps ReactECharts with a computed option config.",
+     tree:`// ======================== Charts.jsx (agentDashboard) ========================
+// All 6 agent charts — named exports
+//
+// Exports:
+//   StatusPie({ stats })
+//     └─── Donut — call status breakdown with statusColor map
+//
+//   SentimentPie({ stats })
+//     └─── Donut — sentiment distribution with sentimentColor map
+//
+//   DailyLine({ stats })
+//     └─── Line — daily call volume + avg duration (dual series)
+//
+//   HourlyHeat({ stats })
+//     └─── Bar — 24h heatmap, bar opacity scaled to volume
+//
+//   CategoryBubble({ stats })
+//     └─── Scatter — bubbles, size = count × 4, clamped 20–80px
+//
+//   SankeyChart({ stats })
+//     |--- IF no sankeyRaw → show empty state message
+//     └─── Sankey — pathway → outcome status flow
+// ======================================================`},
+    {name:"CallTable.jsx (agent)",path:"src/components/agentDashboard/CallTable.jsx",status:"ok",desc:"Call table + detail modal",
+     purpose:"Reusable call history table with expandable detail modal including recording player and transcript.",
+     tree:`// ======================== CallTable.jsx (agentDashboard) ========================
+// Call history table + detail modal
+//
+// Sub-components:
+//   CallModal({ call, onClose })
+//     |--- All call fields in key/value rows
+//     |--- Issue summary block
+//     |--- Recording: <audio> if recordingUrl, else placeholder
+//     └─── Transcript: <pre> if transcript, else placeholder
+//
+// Main: CallTable({ calls, full=false })
+//                   |---> selectedCall → controls modal visibility
+//
+// ||---> Columns:
+//       |--- full=false: Time, From, Duration, Status, Category, Details
+//       └─── full=true:  + Direction, To, Sentiment, Cost
+//
+// ||---> Each row: status pill (statusColor), Details button → modal
+// ======================================================`},
+    {name:"Tabs.jsx (agent)",path:"src/components/agentDashboard/Tabs.jsx",status:"ok",desc:"All 4 dashboard tab layouts",
+     purpose:"All 4 agent dashboard tab layouts as named exports. Composes charts and tables per tab.",
+     tree:`// ======================== Tabs.jsx (agentDashboard) ========================
+// All 4 tab layouts — named exports
+//
+// Exports:
+//   OverviewTab({ stats, calls, chartsReady })
+//     |--- Row 1: DailyLine + HourlyHeat
+//     |--- Row 2: StatusPie + SentimentPie + CategoryBubble
+//     |--- SankeyChart
+//     └─── Recent Calls (CallTable, first 8)
+//
+//   CallsTab({ calls })
+//     └─── Full CallTable (all calls, full=true)
+//
+//   AnalyticsTab({ stats, chartsReady })
+//     |--- DailyLine (full width)
+//     |--- SankeyChart + HourlyHeat
+//     └─── StatusPie + SentimentPie + CategoryBubble
+//
+//   SettingsTab({ profile })
+//     └─── Read-only profile field list
+// ======================================================`},
+    {name:"useAgentDashboard.js",path:"src/hooks/useAgentDashboard.js",status:"ok",desc:"Agent API + state + 30s polling",
+     purpose:"Custom hook managing all agent dashboard API calls, filter state, loading state, and 30s polling.",
+     tree:`// ======================== useAgentDashboard.js ========================
+// Custom hook — agent dashboard data + state
+//
+// Functions/Methods -> useAgentDashboard() -> Hook
+//                   |---> buildQS()  → useCallback
+//                   |     └─── URLSearchParams from dateRange + channel
+//                   |
+//                   |---> loadAll()  → useCallback (async)
+//                   |     |--- setLoading(true), setChartsReady(false)
+//                   |     |--- Promise.all:
+//                   |     |     GET /api/agent/profile
+//                   |     |     GET /api/agent/call-stats?qs
+//                   |     |     GET /api/agent/calls?qs&limit=100
+//                   |     |     GET /api/agent/csat?qs
+//                   |     |--- setProfile, setStats, setCalls, setCsatData
+//                   |     |--- setLoading(false)
+//                   |     └─── setTimeout 150ms → setChartsReady(true)
+//                   |
+//                   |---> useEffect() → loadAll on mount + filter change
+//                   |---> useEffect() → Polling: setInterval(loadAll, 30s)
+//
+// ||---> Returns:
+//       token, userObj, profile, stats, calls, csatData,
+//       loading, chartsReady, dateRange, setDateRange,
+//       channel, setChannel, refresh
+// ======================================================`},
+  ]},
+  {layer:"User Pages",color:"#854F0B",tag:"user",files:[
+    {name:"HomePage.jsx",path:"src/pages/user/HomePage.jsx",status:"ok",desc:"User home — stats + activity",
+     purpose:"User dashboard home. Fetches stats and recent activity from backend. Polling every 30s.",
+     tree:`// ======================== HomePage.jsx ========================
+// User home — stats + recent activity
+//
+// Functions/Methods -> HomePage() -> Main component
+//                   |---> fetchAll()       → useCallback (async)
+//                   |     |--- api.get("/home/stats")
+//                   |     |--- api.get("/home/recent-activity?limit=5")
+//                   |     └─── setStats + setActivity
+//                   |
+//                   |---> fmtDuration(secs) → "Xm Ys" string
+//                   |---> go(page)          → Navigate to user sub-route
+//                   |
+//                   |---> useEffect() → fetchAll on mount
+//                   |---> useEffect() → Polling: setInterval(fetchAll, 30s)
+//
+// ||---> State: stats, activity, loading
+//
+// ||---> Renders:
+//       |--- Welcome header + action buttons
+//       |--- 3 stat cards (total_calls_7d, avg_per_day, active_regions)
+//       |--- Call Distribution (EmptyState placeholder)
+//       |--- Recent Activity list (live from DB)
+//       └─── Quick Actions + Resources sidebar
+// ======================================================`},
+    {name:"CallLogsPage.jsx",path:"src/pages/user/CallLogsPage.jsx",status:"ok",desc:"Call logs with filter + polling",
+     purpose:"Call log table with status filter pills. Polling every 30s. Filter-aware — polling respects active filter.",
+     tree:`// ======================== CallLogsPage.jsx ========================
+// User call logs — filtered table + polling
+//
+// Functions/Methods -> CallLogsPage() -> Main component
+//                   |---> loadCalls()         → useCallback (async)
+//                   |     |--- api.get(/call-logs or /call-logs?status=X)
+//                   |     └─── setCalls(response.calls)
+//                   |
+//                   |---> getStatusColor(status) → CSS color variable
+//                   |---> formatDate(dateStr)     → Locale date string
+//                   |---> formatDuration(seconds) → "M:SS" string
+//                   |
+//                   |---> useEffect() → loadCalls when filter changes
+//                   |---> useEffect() → Polling: setInterval(loadCalls, 30s)
+//
+// ||---> State: calls, loading, error, filter
+//
+// ||---> Renders:
+//       |--- Header + Refresh button
+//       |--- Filter pills (all / completed / failed / queued)
+//       └─── Calls table (phone, status, duration, cost, date)
+// ======================================================`},
+    {name:"AnalyticsPage.jsx",path:"src/pages/user/AnalyticsPage.jsx",status:"ok",desc:"Full user analytics",
+     purpose:"Full user analytics with summary KPIs, daily chart, outcomes, duration distribution, cost breakdown.",
+     tree:`// ======================== AnalyticsPage.jsx ========================
+// User analytics — full call analytics view
+//
+// Functions/Methods -> AnalyticsPage() -> Main component
+//                   |---> useEffect()          → GET /api/analytics/calls?period=X
+//                   └---> handlePeriodChange(p) → setSelectedPeriod → re-fetch
+//
+// ||---> State: data, selectedPeriod, loading
+//
+// ||---> Renders:
+//       |--- Period selector (today / last_week / last_month)
+//       |--- Summary KPI cards
+//       |--- Daily call volume chart
+//       |--- Outcomes breakdown
+//       |--- Duration distribution
+//       └─── Cost breakdown
+// ======================================================`},
+    {name:"SendCallPage.jsx",path:"src/pages/user/SendCallPage.jsx",status:"none",desc:"Call dispatch — UI only",
+     purpose:"Call dispatch form UI. Not connected to any backend endpoint yet.",
+     tree:`// ======================== SendCallPage.jsx ========================
+// Send call page — UI only [NOT CONNECTED]
+//
+// Status: UI built, no backend connection
+//
+// Planned:
+//   |--- POST /api/dispatch-call
+//   └─── Phone number, pathway, persona selection
+// ======================================================`},
+    {name:"PersonasPage.jsx",path:"src/pages/user/PersonasPage.jsx",status:"none",desc:"Persona CRUD — UI only",
+     purpose:"AI persona management UI. Not connected to backend.",
+     tree:`// ======================== PersonasPage.jsx ========================
+// Personas — UI only [NOT CONNECTED]
+// Status: UI built, no backend
+// ======================================================`},
+    {name:"PathwaysPage.jsx",path:"src/pages/user/PathwaysPage.jsx",status:"none",desc:"IVR pathway builder — UI only",
+     purpose:"IVR pathway visual builder UI. Not connected to backend.",
+     tree:`// ======================== PathwaysPage.jsx ========================
+// Pathways — UI only [NOT CONNECTED]
+// Status: UI built, no backend
+// ======================================================`},
+  ]},
+  {layer:"Shared Components",color:"#444441",tag:"all",files:[
+    {name:"fulldashboard.jsx",path:"src/components/dashboard/fulldashboard.jsx",status:"ok",desc:"All superuser widget exports",
+     purpose:"Houses all superuser dashboard widget components as named exports used by Dashboard.jsx.",
+     tree:`// ======================== fulldashboard.jsx ========================
+// Superuser widget components — all named exports
+//
+// Exports:
+//
+//   Bubble({ position, size, color, agent, onClick, onHover })
+//     |--- useFrame() → float animation + scale lerp on hover
+//     └─── meshStandardMaterial with emissive on hover
+//
+//   RefinedGrid() → 3D coordinate grid + axis labels (Three.js)
+//
+//   Scene3D({ agents, onBubbleClick, hoveredAgent, interactive })
+//     |--- useMemo() → compute bubble positions
+//     |     x = callsHandled / maxCalls × 20 - 10
+//     |     y = (csat - 3) × 2
+//     |     z = escalations / maxEscalations × 20 - 10
+//     |     size = clamp(0.4, 2.5, workload/40)
+//     |     color = riskLevel → #EF4444 / #F59E0B / #10B981
+//     └─── OrbitControls if interactive=true
+//
+//   BubbleChart({ agents, onAgentClick })
+//     └─── Single Canvas toggled inline ↔ fullscreen via CSS
+//
+//   Header({ filters... }) → Sticky top nav with all filter controls
+//
+//   KPICard({ title, value, unit, color }) → Single metric display
+//
+//   Infographics() → GET /api/stats → 7 KPI cards
+//
+//   KPIPanel({ agents })
+//     |--- Computes avgLatency, avgCsat, totalCalls, avgWorkload from prop
+//     └─── Latency alerts: avgLatency > 300 OR riskLevel = high
+//
+//   RiskPanel({ agents, onAgentClick })
+//     |--- highRisk: riskLevel=high OR (csat<3.5 AND escalations>10)
+//     └─── highPerforming: riskLevel=low AND csat>=4.5
+//
+//   SankeyChart({ data }) → HTML5 Canvas sankey
+//     |--- drawSankey(ctx, w, h, data, isDetail)
+//     |--- handleMouseMove → hit detection on nodePositionsRef
+//     |--- handleCanvasClick → setSelectedNode → sub-graph modal
+//     └─── CanvasWrapper → renders sub-graph for clicked node
+//
+//   Sidebar() → Superuser nav sidebar
+//
+//   AIChatBox() → Floating AI chat
+//     └─── POST /api/ask [MISSING endpoint]
+// ======================================================`},
+    {name:"AppShell.jsx",path:"src/layout/AppShell.jsx",status:"ok",desc:"User dashboard layout shell",
+     purpose:"User dashboard layout. Renders the user sidebar and an Outlet for all nested user routes.",
+     tree:`// ======================== AppShell.jsx ========================
+// User dashboard shell — sidebar + outlet
+//
+// Functions/Methods -> AppShell() -> Layout component
+//
+// ||---> Renders:
+//       |--- Sidebar (user nav links)
+//       └─── <Outlet /> (nested user pages render here)
+// ======================================================`},
+    {name:"agentHelpers.js",path:"src/utils/agentHelpers.js",status:"ok",desc:"Formatting helpers + color maps",
+     purpose:"Pure utility functions for agent dashboard formatting and color mapping.",
+     tree:`// ======================== agentHelpers.js ========================
+// Agent helpers — pure utility exports
+//
+// Exports:
+//   fmt(n, d=1)           → Fixed decimal or "—" if null
+//   fmtDur(s)             → "Xm Ys" or "Ys"
+//   fmtDate(d)            → en-IN locale date + time string
+//
+//   statusColor           → { resolved, escalated, transferred,
+//                              missed, completed } → hex colors
+//   sentimentColor        → { positive, neutral, negative } → hex
+//   channelIcon           → { voice, chat, email } → emoji
+// ======================================================`},
+  ]},
+  {layer:"Backend",color:"#A32D2D",tag:"be",files:[
+    {name:"main.py",path:"backend/main.py",status:"ok",desc:"FastAPI app + router registry",
+     purpose:"FastAPI application entry. Configures CORS and registers all route routers with /api prefix.",
+     tree:`# ======================== main.py ========================
+# FastAPI app — CORS + all routers
+#
+# Setup:
+#   FastAPI(title="SR Comsoft AI API", version="2.0.0")
+#   CORSMiddleware: localhost 5173 + 5174 (Vite dev)
+#
+# Routers registered (all prefix="/api" except agent):
+#   auth.router       /api/register, /api/login
+#   admin.router      /api/admin/*, /api/calls
+#   superuser.router  /api/agents, /api/sankey, /api/stats, /api/call-stats
+#   home.router       /api/home/*
+#   analytics.router  /api/analytics/*
+#   user.router       /api/call-logs
+#   agent_router      /api/agent/* (no extra prefix — already has /api/agent)
+#
+# Health:
+#   GET /         → { status: "SR Comsoft AI API running" }
+#   GET /api/health → { status: "ok" }
+# ======================================================`},
+    {name:"auth.py",path:"backend/routes/auth.py",status:"ok",desc:"Register + login endpoints",
+     purpose:"User registration and login. bcrypt password hashing, JWT token generation, RETURNING id pattern.",
+     tree:`# ======================== auth.py ========================
+# Auth routes — register + login
+#
+# Models:
+#   RegisterRequest(BaseModel): name, email, password, phone_number
+#   LoginRequest(BaseModel):    email, password
+#
+# Endpoints:
+#   POST /api/register
+#     |--- Validate fields + password >= 8 chars
+#     |--- bcrypt.hashpw(password, gensalt())
+#     |--- INSERT INTO users ... RETURNING id
+#     |--- jwt.encode({ user_id, exp: +7 days })
+#     └─── Return { token, user: { id, name, email, role } }
+#
+#   POST /api/login
+#     |--- SELECT * FROM users WHERE email = %s
+#     |--- bcrypt.checkpw(password, password_hash)
+#     |--- jwt.encode({ user_id, exp })
+#     └─── Return { token, user }
+#
+# DB: psycopg2 RealDictCursor, RETURNING id (not lastrowid)
+# ======================================================`},
+    {name:"admin.py",path:"backend/routes/admin.py",status:"ok",desc:"Admin user mgmt + call CRUD",
+     purpose:"Admin endpoints for user management and call log CRUD. All protected by require_admin dependency.",
+     tree:`# ======================== admin.py ========================
+# Admin routes — user mgmt + call CRUD
+#
+# Auth: all routes Depends(require_admin)
+# DB:   psycopg2 RealDictCursor
+#
+# Endpoints:
+#   GET  /api/admin/stats           → totalUsers, totalCalls, totalAgents
+#   GET  /api/admin/users           → all users list
+#   PUT  /api/admin/users/:id/status → toggle is_active boolean
+#   PUT  /api/admin/users/:id/credits → COALESCE(credits,0)+amount
+#   GET  /api/calls                 → last 100 calls LEFT JOIN agents
+#   POST /api/calls                 → INSERT call_log RETURNING id
+#   PUT  /api/calls/:id             → UPDATE status
+# ======================================================`},
+    {name:"superuser.py",path:"backend/routes/superuser.py",status:"ok",desc:"Team-scoped agent + call routes",
+     purpose:"All superuser routes. Every query filtered by superuser_id to scope data to the logged-in team only.",
+     tree:`# ======================== superuser.py ========================
+# Superuser routes — ALL scoped to superuser_id
+#
+# Models:
+#   AgentCreate/AgentUpdate(BaseModel): name, model_variant...
+#
+# Endpoints:
+#   GET  /api/agents       → WHERE superuser_id = user.id
+#                            Returns quoted aliases: AS "riskLevel" etc
+#   POST /api/agents       → INSERT with superuser_id = user.id
+#   GET  /api/agents/:id   → agent + callLogs + graphData (scoped)
+#   PUT  /api/agents/:id   → UPDATE WHERE id AND superuser_id
+#   DEL  /api/agents/:id   → DELETE WHERE id AND superuser_id
+#   GET  /api/sankey       → category+status for team's calls
+#   GET  /api/call-stats   → category counts for team
+#   GET  /api/calls/category/:cat → calls by category + team
+#   GET  /api/stats        → totalTraffic, avgCsat, avgLatency, escalationRate
+#
+# CRITICAL: PostgreSQL aliases MUST be quoted AS "camelCase"
+#           Unquoted aliases → all lowercase → frontend field mismatch
+# ======================================================`},
+    {name:"agent.py",path:"backend/routes/agent.py",status:"ok",desc:"Agent-scoped dashboard routes",
+     purpose:"All agent dashboard endpoints. Each scoped to the agent's own user_id via the agents table.",
+     tree:`# ======================== agent.py ========================
+# Agent routes — prefix /api/agent, scoped to user_id
+#
+# Auth: all Depends(get_current_user)
+#
+# Helper:
+#   date_filter_clause(date_from, date_to, alias)
+#     └─── Returns (SQL_clause_str, params_list)
+#
+# Endpoints:
+#   GET /api/agent/profile
+#     |--- JOIN agents + users WHERE agents.user_id = current_user.id
+#     └─── Returns camelCase fields (quoted aliases)
+#
+#   GET /api/agent/csat?date_from&date_to&channel
+#     └─── % positive sentiment = CSAT, COUNT(*) = totalCalls
+#
+#   GET /api/agent/calls?date_from&date_to&channel&status&limit&offset
+#     └─── Paginated call_logs for this agent_id
+#
+#   GET /api/agent/call-stats?date_from&date_to&channel
+#     |--- statusBreakdown, categoryBreakdown, sentimentBreakdown
+#     |--- dailyVolume (14 days), hourlyHeatmap (EXTRACT HOUR)
+#     |--- sankeyRaw (pathway → status)
+#     └─── kpis (total, resolved, escalated, avgDuration, totalCost)
+#
+#   GET /api/agent/ivr-status
+#     └─── Top 6 pathway hits in last 24 hours (NOW() - INTERVAL '24 hours')
+# ======================================================`},
+    {name:"deps.py",path:"backend/deps.py",status:"ok",desc:"JWT auth middleware + role guards",
+     purpose:"JWT authentication dependency. Decodes token, fetches user from Neon DB. Role-check helpers.",
+     tree:`# ======================== deps.py ========================
+# Auth dependencies — JWT decode + role guards
+#
+# Functions:
+#   get_current_user(authorization: Header = Header(""))
+#     |--- token = authorization.replace("Bearer ", "").strip()
+#     |--- IF no token → raise 401
+#     |--- jwt.decode(token, JWT_SECRET, algorithms=[JWT_ALGO])
+#     |--- SELECT * FROM users WHERE id = payload["user_id"]
+#     |--- Return dict(user)
+#     |--- Raises 401: no token / expired / invalid / not found
+#
+#   require_admin(authorization)
+#     |--- get_current_user()
+#     └─── Raise 403 if user["role"] != "admin"
+#
+#   require_superuser(authorization)
+#     └─── Raise 403 if user["role"] != "superuser"
+#
+#   require_user(authorization)
+#     └─── Raise 403 if role not in (user, admin, superuser)
+# ======================================================`},
+    {name:"db.py",path:"backend/models/db.py",status:"ok",desc:"Neon PostgreSQL connection",
+     purpose:"Database connection module. Returns psycopg2 connection to Neon PostgreSQL via DATABASE_URL.",
+     tree:`# ======================== db.py ========================
+# Database — psycopg2 + Neon PostgreSQL
+#
+# Functions:
+#   get_db()
+#     └─── psycopg2.connect(DATABASE_URL) → return conn
+#
+#   test_connection()
+#     |--- get_db() → cursor.execute("SELECT 1")
+#     |--- Print success / failure message
+#     └─── Return bool
+#
+# Usage pattern across all routes:
+#   conn   = get_db()
+#   cursor = conn.cursor(cursor_factory=psycopg2.extras.RealDictCursor)
+#   cursor.execute("SELECT ...", (params,))
+#   rows   = cursor.fetchall() or fetchone()
+#   conn.commit()      # writes only
+#   cursor.close()
+#   conn.close()
+# ======================================================`},
+    {name:"config.py",path:"backend/config.py",status:"ok",desc:"DB URL + JWT config from .env",
+     purpose:"Central config. Loads DATABASE_URL and JWT_SECRET from .env using python-dotenv.",
+     tree:`# ======================== config.py ========================
+# Config — loads .env vars
+#
+# Variables:
+#   DATABASE_URL
+#     → Neon PostgreSQL connection string
+#     → Loaded from .env (fallback: hardcoded Neon URL)
+#
+#   JWT_SECRET       → Secret key for JWT signing (from .env)
+#   JWT_ALGO         → "HS256"
+#   JWT_EXPIRE_DAYS  → 7
+#
+# .env file location: backend/.env
+#   DATABASE_URL=postgresql://...neon.tech/neondb?sslmode=require
+#   JWT_SECRET=your_secret_key
+# ======================================================`},
+    {name:"home.py",path:"backend/routes/home.py",status:"ok",desc:"User home stats + recent activity",
+     purpose:"Provides user dashboard home page data — 7-day call stats and recent activity feed.",
+     tree:`# ======================== home.py ========================
+# Home routes — user dashboard data
+#
+# Auth: all Depends(require_user)
+#
+# Endpoints:
+#   GET /api/home/stats
+#     |--- COUNT calls WHERE user_id AND created_at >= NOW()-'7 days'
+#     |--- avg_per_day = total / 7
+#     |--- COUNT DISTINCT area_code
+#     └─── Return { total_calls_7d, avg_per_day, active_regions }
+#
+#   GET /api/home/recent-activity?limit=5
+#     |--- SELECT last N call_logs WHERE user_id
+#     |--- Stringify created_at datetime
+#     └─── Return list of call objects
+# ======================================================`},
+    {name:"analytics.py",path:"backend/routes/analytics.py",status:"ok",desc:"User analytics endpoints",
+     purpose:"Full analytics data for user dashboard — summary, daily chart, outcomes, duration, cost breakdown.",
+     tree:`# ======================== analytics.py ========================
+# Analytics routes — user call analytics
+#
+# Auth: all Depends(require_user)
+#
+# Helper:
+#   get_date_filter(period) → datetime
+#     |--- "today"      → today midnight
+#     |--- "last_month" → now - 30 days
+#     └─── default      → now - 7 days
+#
+# Endpoints:
+#   GET /api/analytics/calls?period=last_week
+#     |--- summary: total_calls, total_cost, avg_duration, total_issues
+#     |--- chart:   daily COUNT grouped by DATE(created_at)
+#     |--- outcomes: status counts (completed/voicemail/failed)
+#     |--- duration_dist: <2min / 2-5min / >5min buckets
+#     |--- cost_breakdown: AI 60% / telephony 25% / other 15%
+#     └─── calls: full list ordered DESC
+#
+#   GET /api/analytics/reports?period=last_week
+#     └─── total_calls, cost, avg_duration, success_rate, issues, chart
+# ======================================================`},
+    {name:"user.py",path:"backend/routes/user.py",status:"ok",desc:"User call logs endpoint",
+     purpose:"Returns user's call logs with optional status filter. Used by CallLogsPage.",
+     tree:`# ======================== user.py ========================
+# User routes — call logs
+#
+# Auth: Depends(require_user)
+#
+# Endpoints:
+#   GET /api/call-logs?status=all
+#     |--- IF status != "all" → add WHERE status = %s
+#     |--- SELECT id, call_id, direction, to_number AS phone_number,
+#     |          from_number, duration_seconds AS duration,
+#     |          cost, status, pathway, created_at
+#     |--- WHERE user_id = current_user.id ORDER BY created_at DESC
+#     |--- Stringify created_at
+#     |--- Cast cost to float
+#     └─── Return { calls: [...] }
+# ======================================================`},
+  ]},
+];
+
+let currentTag = 'all';
+let selectedItem = null;
+
+function filterTab(tag, el) {
+  currentTag = tag;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
+  el.classList.add('on');
+  renderList();
+}
+
+function renderList() {
+  const list = document.getElementById('tree-list');
+  list.innerHTML = '';
+  DOCS.forEach(layer => {
+    const files = layer.files.filter(f =>
+      currentTag === 'all' ||
+      layer.tag === currentTag ||
+      layer.tag === 'all' ||
+      f.name.toLowerCase().includes(currentTag)
+    );
+    if (!files.length) return;
+    const hdr = document.createElement('div');
+    hdr.className = 'layer-hdr';
+    hdr.textContent = layer.layer;
+    list.appendChild(hdr);
+    files.forEach(f => {
+      const item = document.createElement('div');
+      item.className = 'fitem';
+      item.dataset.key = f.path;
+      const dotColor = f.status === 'ok' ? '#4ade80' : f.status === 'warn' ? '#fbbf24' : '#475569';
+      item.innerHTML = `<span class="dot" style="background:${dotColor}"></span>
+        <div>
+          <div class="fn">${f.name}</div>
+          <div class="fd">${f.desc}</div>
+        </div>`;
+      item.onclick = () => showDetail(f, item);
+      list.appendChild(item);
+    });
+  });
+}
+
+function showDetail(f, el) {
+  if (selectedItem) selectedItem.classList.remove('sel');
+  el.classList.add('sel');
+  selectedItem = el;
+  const badge = f.status === 'ok'
+    ? '<span class="badge b-ok">connected</span>'
+    : f.status === 'warn'
+    ? '<span class="badge b-warn">partial</span>'
+    : f.status
+    ? '<span class="badge b-none">ui only</span>'
+    : '';
+
+  const highlighted = f.tree.split('\n').map(line => {
+    if (line.includes('===')) return `<span style="color:#7c3aed;font-weight:600">${line}</span>`;
+    if (line.match(/GET|POST|PUT|DELETE|DEL/)) return line.replace(/(GET|POST|PUT|DELETE|DEL)/g, '<span style="color:#34d399;font-weight:600">$1</span>');
+    if (line.includes('MISSING') || line.includes('BUG') || line.includes('NOT IMPLEMENTED')) return `<span style="color:#fbbf24">${line}</span>`;
+    if (line.includes('Returns') || line.includes('Renders') || line.includes('Exports')) return `<span style="color:#60a5fa">${line}</span>`;
+    if (line.match(/\w+\(\)/)) return line.replace(/(\w+\(\w*\))/g, '<span style="color:#818cf8">$1</span>');
+    return line;
+  }).join('\n');
+
+  document.getElementById('detail').innerHTML = `
+    <div class="dd-title">${f.name} ${badge}</div>
+    <div class="dd-path">${f.path}</div>
+    <div class="dd-purpose">${f.purpose}</div>
+    <div class="tree">${highlighted}</div>`;
+}
+
+renderList();
+</script>
+</body>
+</html>
