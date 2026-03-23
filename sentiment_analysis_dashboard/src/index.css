@@ -1,0 +1,72 @@
+/* ─── START: Global Styles ────────────────────────────────────────────────────
+   File   : index.css
+   Role   : CSS variables, resets, scrollbar, utility classes
+   Used by: All components via className
+   ─────────────────────────────────────────────────────────────────────────── */
+
+@import "tailwindcss";
+
+/* ── Brand tokens — single source of truth for colors ── */
+:root {
+  --brand-bg:        #020617;
+  --brand-primary:   #6366F1;
+  --brand-secondary: #8B5CF6;
+  --brand-text:      #FFFFFF;
+  --brand-muted:     #94A3B8;
+}
+
+/* ── Reset ── */
+* {
+  box-sizing: border-box;
+}
+
+/* ── Base body — dark background, system font stack ── */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--brand-bg);
+  color: var(--brand-text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  min-height: 100vh;
+}
+
+/* ── Global scrollbar — thin, subtle ── */
+::-webkit-scrollbar       { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.5); }
+::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.3); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(99, 102, 241, 0.6); }
+
+/* ── scrollbar-visible — forced visible scrollbar for specific panels ── */
+.scrollbar-visible {
+  overflow-y: auto !important;
+  scrollbar-width: thin;
+  scrollbar-color: #6366f1 rgba(15, 23, 42, 0.5);
+}
+.scrollbar-visible::-webkit-scrollbar         { width: 6px !important; display: block !important; }
+.scrollbar-visible::-webkit-scrollbar-track   { background: rgba(15, 23, 42, 0.8) !important; border-radius: 10px; }
+.scrollbar-visible::-webkit-scrollbar-thumb   { background: linear-gradient(to bottom, #6366f1, #8b5cf6) !important; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); }
+.scrollbar-visible::-webkit-scrollbar-thumb:hover { background: #818cf8 !important; }
+
+/* ── brand-text-gradient — indigo→violet gradient text ── */
+.brand-text-gradient {
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── glass-panel — frosted dark card base ── */
+.glass-panel {
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+}
+
+/* ── chart-container — chart wrapper card ── */
+.chart-container {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(99, 102, 241, 0.15);
+  border-radius: 12px;
+}
+
+/* ─── END: Global Styles ─────────────────────────────────────────────────────── */
